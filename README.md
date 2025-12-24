@@ -33,7 +33,7 @@ python app.py
 1. **Connect Repository**: Link your GitHub repo to Render
 2. **Create Web Service**: 
    - Build Command: `pip install -r requirements.txt`
-   - Start Command: `cd backend && python app.py`
+   - Start Command: `python app.py`
    - Environment: Python 3.11
 3. **Deploy**: Render serves both frontend and backend at one URL
 

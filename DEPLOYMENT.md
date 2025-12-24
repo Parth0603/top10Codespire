@@ -12,8 +12,10 @@ Render will handle **both** your frontend and backend in one deployment!
    - **Name**: `codespire-detective-system`
    - **Environment**: `Python 3`
    - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `cd backend && python app.py`
+   - **Start Command**: `python app.py`
    - **Auto-Deploy**: `Yes`
+
+**Important**: Use `python app.py` as the start command, not the default gunicorn command.
 
 4. **That's it!** Render will serve:
    - **Frontend**: `https://your-app.onrender.com/`
