@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODESPIRE 3.0 - Case Files Reveal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="badge">CLASSIFIED</div>
+            <h1 class="title">
+                <span class="typing-text">CODESPIRE 3.0</span>
+            </h1>
+            <h2 class="subtitle">TOP 10 CASE FILES</h2>
+            <div class="case-number">CASE #2024-HACK-001</div>
+        </header>
+
+        <!-- Countdown Section -->
+        <section class="countdown-section" id="countdownSection">
+            <div class="evidence-board">
+                <div class="seal-stamp">
+                    <div class="stamp-text">SEALED</div>
+                </div>
+                
+                <h3 class="status-text" id="statusText">THE CASE FILES ARE SEALED</h3>
+                
+                <div class="timer-container">
+                    <div class="timer-label">REVEAL IN:</div>
+                    <div class="timer" id="timer">00:30</div>
+                </div>
+                
+                <div class="investigation-note">
+                    <p>🕵️ Investigation in progress...</p>
+                    <p>Evidence will be revealed when the timer reaches zero.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section (Hidden Initially) -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <div class="reveal-header">
+                <div class="badge badge-success">CASE CLOSED</div>
+                <h2>🏆 TOP 10 VERIFIED</h2>
+                <p class="reveal-subtitle">The following teams have been identified as the top performers</p>
+            </div>
+            
+            <div class="case-files" id="caseFiles">
+                <!-- Case file cards will be populated by JavaScript -->
+            </div>
+            
+            <div class="restart-controls">
+                <button class="btn btn-restart" id="restartBtn">
+                    🔄 START NEW INVESTIGATION
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading Section -->
+        <section class="loading-section" id="loadingSection" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Accessing case files...</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>🔒 Secure Evidence Management System | CODESPIRE 3.0</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
