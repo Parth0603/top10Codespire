@@ -21,7 +21,7 @@ if __name__ == '__main__':
     
     print(f"🔍 CODESPIRE 3.0 Detective Server Starting in DEVELOPMENT mode...")
     print(f"🌐 Port: {port}")
-    print("⚠️  For production, use: gunicorn -w 4 -b 0.0.0.0:$PORT app:application")
+    print("⚠️  For production, use: gunicorn -w 4 -b 0.0.0.0:$PORT wsgi:application")
     
     # Use 0.0.0.0 for deployment compatibility
     app.run(debug=False, host='0.0.0.0', port=port)

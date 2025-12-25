@@ -29,4 +29,4 @@ exec gunicorn \
     --access-logfile - \
     --error-logfile - \
     --log-level info \
-    app:application
+    wsgi:application
