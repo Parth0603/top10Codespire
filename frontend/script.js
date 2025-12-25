@@ -46,7 +46,7 @@ class CodespireReveal {
     }
 
     createConfetti() {
-        const colors = ['#64b5f6', '#42a5f5', '#2196f3', '#1976d2', '#0d47a1'];
+        const colors = ['#7dd3fc', '#38bdf8', '#0ea5e9', '#0284c7', '#0369a1'];
         
         // Reduced particle count for better performance
         // Left corner confetti
