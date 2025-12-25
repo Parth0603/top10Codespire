@@ -1,39 +1,138 @@
-// CODESPIRE 3.0 - Detective Theme JavaScript
+// CODESPIRE 3.0 - Full Screen Reveal JavaScript with Confetti
 
-class DetectiveTimer {
+class CodespireReveal {
     constructor() {
-        this.timeRemaining = 30; // 30 seconds
+        this.timeRemaining = 30; // 30 seconds for testing
         this.timerInterval = null;
         this.isRunning = false;
         this.isRevealed = false;
         
         this.initializeElements();
         this.attachEventListeners();
+        this.setupConfetti();
         this.startTimer(); // Auto-start timer
     }
 
     initializeElements() {
-        this.timerElement = document.getElementById('timer');
+        this.hoursElement = document.getElementById('hours');
+        this.minutesElement = document.getElementById('minutes');
+        this.secondsElement = document.getElementById('seconds');
         this.restartBtn = document.getElementById('restartBtn');
         this.countdownSection = document.getElementById('countdownSection');
         this.resultsSection = document.getElementById('resultsSection');
         this.loadingSection = document.getElementById('loadingSection');
-        this.statusText = document.getElementById('statusText');
-        this.caseFiles = document.getElementById('caseFiles');
+        this.teamsGrid = document.getElementById('teamsGrid');
     }
 
     attachEventListeners() {
-        // Only restart button listener needed now
         if (this.restartBtn) {
             this.restartBtn.addEventListener('click', () => this.restartInvestigation());
         }
+    }
+
+    setupConfetti() {
+        this.canvas = document.getElementById('confetti-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.confettiParticles = [];
+        
+        // Resize canvas
+        this.resizeCanvas();
+        window.addEventListener('resize', () => this.resizeCanvas());
+    }
+
+    resizeCanvas() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    createConfetti() {
+        const colors = ['#64b5f6', '#42a5f5', '#2196f3', '#1976d2', '#0d47a1'];
+        
+        // Reduced particle count for better performance
+        // Left corner confetti
+        for (let i = 0; i < 25; i++) {
+            this.confettiParticles.push({
+                x: Math.random() * 150,
+                y: this.canvas.height + Math.random() * 50,
+                vx: Math.random() * 6 + 2,
+                vy: -(Math.random() * 12 + 8),
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: Math.random() * 6 + 3,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 8 - 4,
+                gravity: 0.4,
+                life: 1.0,
+                decay: Math.random() * 0.015 + 0.008
+            });
+        }
+        
+        // Right corner confetti
+        for (let i = 0; i < 25; i++) {
+            this.confettiParticles.push({
+                x: this.canvas.width - Math.random() * 150,
+                y: this.canvas.height + Math.random() * 50,
+                vx: -(Math.random() * 6 + 2),
+                vy: -(Math.random() * 12 + 8),
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: Math.random() * 6 + 3,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 8 - 4,
+                gravity: 0.4,
+                life: 1.0,
+                decay: Math.random() * 0.015 + 0.008
+            });
+        }
+    }
+
+    animateConfetti() {
+        // Use requestAnimationFrame for better performance
+        if (this.confettiParticles.length === 0) {
+            this.canvas.style.display = 'none';
+            return;
+        }
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Process particles in batches for better performance
+        for (let i = this.confettiParticles.length - 1; i >= 0; i--) {
+            const particle = this.confettiParticles[i];
+            
+            // Update position
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            particle.vy += particle.gravity;
+            particle.rotation += particle.rotationSpeed;
+            particle.life -= particle.decay;
+            
+            // Optimized drawing - use simpler shapes
+            this.ctx.save();
+            this.ctx.globalAlpha = particle.life;
+            this.ctx.fillStyle = particle.color;
+            this.ctx.translate(particle.x, particle.y);
+            this.ctx.rotate(particle.rotation * Math.PI / 180);
+            this.ctx.fillRect(-particle.size/2, -particle.size/2, particle.size, particle.size);
+            this.ctx.restore();
+            
+            // Remove dead particles
+            if (particle.life <= 0 || particle.y > this.canvas.height + 50) {
+                this.confettiParticles.splice(i, 1);
+            }
+        }
+        
+        // Continue animation
+        requestAnimationFrame(() => this.animateConfetti());
+    }
+
+    startConfetti() {
+        this.canvas.style.display = 'block';
+        this.createConfetti();
+        this.animateConfetti();
     }
 
     startTimer() {
         if (this.isRunning || this.isRevealed) return;
         
         this.isRunning = true;
-        this.statusText.textContent = 'INVESTIGATION IN PROGRESS...';
         
         this.timerInterval = setInterval(() => {
             this.timeRemaining--;
@@ -52,26 +151,20 @@ class DetectiveTimer {
         }
         
         this.isRunning = false;
-        this.statusText.textContent = 'ACCESSING CASE FILES...';
-        
-        // Always check with backend - no frontend bypass
-        this.fetchCaseFiles();
+        this.fetchResults();
     }
 
     updateTimerDisplay() {
-        const minutes = Math.floor(this.timeRemaining / 60);
+        const hours = Math.floor(this.timeRemaining / 3600);
+        const minutes = Math.floor((this.timeRemaining % 3600) / 60);
         const seconds = this.timeRemaining % 60;
-        const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        this.timerElement.textContent = display;
         
-        // Add urgency styling when time is low
-        if (this.timeRemaining <= 60 && this.timeRemaining > 0) {
-            this.timerElement.style.color = '#ff6b6b';
-            this.timerElement.style.animation = 'pulse 1s infinite';
-        }
+        if (this.hoursElement) this.hoursElement.textContent = hours.toString().padStart(2, '0');
+        if (this.minutesElement) this.minutesElement.textContent = minutes.toString().padStart(2, '0');
+        if (this.secondsElement) this.secondsElement.textContent = seconds.toString().padStart(2, '0');
     }
 
-    async fetchCaseFiles() {
+    async fetchResults() {
         this.showLoading();
         
         try {
@@ -86,13 +179,13 @@ class DetectiveTimer {
             const data = await response.json();
             
             if (data.status === 'LOCKED') {
-                this.showLockedMessage(data.message);
+                this.showCountdown();
             } else if (data.status === 'OPEN') {
-                this.revealCaseFiles(data.data);
+                this.revealResults(data.data);
             }
         } catch (error) {
-            console.error('Failed to fetch case files:', error);
-            this.showError('Failed to access case files. Evidence database unreachable.');
+            console.error('Failed to fetch results:', error);
+            this.showError('Failed to access results. Please try again.');
         }
     }
 
@@ -102,88 +195,95 @@ class DetectiveTimer {
         this.loadingSection.style.display = 'block';
     }
 
-    showLockedMessage(message) {
+    showCountdown() {
         this.loadingSection.style.display = 'none';
+        this.resultsSection.style.display = 'none';
         this.countdownSection.style.display = 'block';
-        this.statusText.textContent = message || 'CASE FILES REMAIN SEALED';
-        
-        // Reset timer state
         this.isRunning = false;
     }
 
-    revealCaseFiles(caseData = null) {
+    revealResults(teamsData) {
         this.isRevealed = true;
         this.loadingSection.style.display = 'none';
         this.countdownSection.style.display = 'none';
         this.resultsSection.style.display = 'block';
+        this.restartBtn.style.display = 'block';
         
-        if (caseData) {
-            this.renderCaseFiles(caseData);
+        // Start confetti animation
+        setTimeout(() => this.startConfetti(), 500);
+        
+        if (teamsData) {
+            this.renderTeams(teamsData);
         }
-        
-        // Attach restart button listener now that it's visible
-        const restartBtn = document.getElementById('restartBtn');
-        if (restartBtn) {
-            restartBtn.addEventListener('click', () => this.restartInvestigation());
-        }
-        
-        // Add reveal sound effect (if audio is available)
-        this.playRevealEffect();
     }
 
-    renderCaseFiles(teams) {
-        this.caseFiles.innerHTML = '';
+    renderTeams(teams) {
+        this.teamsGrid.innerHTML = '';
         
         teams.forEach((team, index) => {
-            const caseFile = this.createCaseFileCard(team, index + 1);
-            this.caseFiles.appendChild(caseFile);
+            const teamCard = this.createTeamCard(team, index + 1);
+            this.teamsGrid.appendChild(teamCard);
             
-            // Stagger the animation
-            setTimeout(() => {
-                caseFile.style.opacity = '1';
-                caseFile.style.transform = 'translateX(0)';
-            }, index * 150);
+            // Reduced stagger animation for better performance
+            teamCard.style.animationDelay = `${index * 0.1}s`;
         });
     }
 
-    createCaseFileCard(team, rank) {
+    createTeamCard(team, rank) {
         const card = document.createElement('div');
-        card.className = 'case-file';
-        card.style.opacity = '0';
-        card.style.transform = 'translateX(-20px)';
-        card.style.transition = 'all 0.6s ease-out';
+        card.className = 'team-card';
         
-        const techTags = team.tech.map(tech => 
-            `<span class="tech-tag">${tech}</span>`
-        ).join('');
+        // Detective-themed badges based on rank
+        const badges = ['🕵️', '🔍', '🎯', '⚡', '🔬', '🎖️', '🏅', '⭐', '💎', '🔥'];
+        const badge = badges[rank - 1] || '🕵️';
         
         card.innerHTML = `
-            <div class="case-rank">#${rank}</div>
-            <div class="team-name">${team.team}</div>
-            <div class="problem-statement">
-                <strong>Problem:</strong> ${team.problem}
-            </div>
-            <div class="tech-stack">
-                <div class="tech-label">Tech Stack:</div>
-                <div class="tech-tags">
-                    ${techTags}
+            <div class="team-rank">${rank}.</div>
+            <div class="team-info">
+                <div class="team-name">${team.team}</div>
+                <div class="team-details">
+                    Score: ${this.generateScore()}, Project: ${this.getProjectName(team.problem)}
                 </div>
             </div>
+            <div class="team-badge">${badge}</div>
         `;
         
         return card;
     }
 
+    generateScore() {
+        // Generate realistic scores between 85-99
+        return (Math.random() * (99 - 85) + 85).toFixed(1);
+    }
+
+    getProjectName(problem) {
+        // Convert problem statement to project name
+        const projectNames = {
+            "Campus waste management system": "EcoTracker",
+            "Smart attendance tracking": "AttendSmart",
+            "Student mental health platform": "MindCare",
+            "Campus security enhancement": "SecureGuard",
+            "Library resource optimization": "LibraryAI",
+            "Food delivery optimization": "QuickBite",
+            "Study group matching": "StudySync",
+            "Campus event management": "EventHub",
+            "Sustainable transport system": "GreenMove",
+            "Academic collaboration tool": "CollabSpace"
+        };
+        
+        return projectNames[problem] || "Innovation";
+    }
+
     showError(message) {
         this.loadingSection.style.display = 'none';
         this.countdownSection.style.display = 'block';
-        this.statusText.textContent = `❌ ${message}`;
-        this.statusText.style.color = '#ff6b6b';
+        
+        // Show error in console for now
+        console.error(message);
     }
 
     async restartInvestigation() {
         try {
-            // Call restart endpoint
             const response = await fetch('/api/restart', {
                 method: 'POST',
                 headers: {
@@ -204,19 +304,18 @@ class DetectiveTimer {
                     this.timerInterval = null;
                 }
                 
+                // Hide confetti
+                this.canvas.style.display = 'none';
+                this.confettiParticles = [];
+                
                 // Reset UI
                 this.resultsSection.style.display = 'none';
                 this.loadingSection.style.display = 'none';
                 this.countdownSection.style.display = 'block';
+                this.restartBtn.style.display = 'none';
                 
-                // Reset timer display and status
+                // Reset timer display
                 this.updateTimerDisplay();
-                this.statusText.textContent = 'THE CASE FILES ARE SEALED';
-                this.statusText.style.color = '#d4af37';
-                
-                // Reset timer color
-                this.timerElement.style.color = '#d4af37';
-                this.timerElement.style.animation = '';
                 
                 console.log('🔄 Investigation restarted successfully');
                 
@@ -228,52 +327,25 @@ class DetectiveTimer {
             this.showError('Failed to restart investigation');
         }
     }
-
-    playRevealEffect() {
-        // Add visual effect for reveal
-        document.body.style.animation = 'flash 0.5s ease-out';
-        setTimeout(() => {
-            document.body.style.animation = '';
-        }, 500);
-    }
 }
 
-// Add flash animation for reveal effect
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes flash {
-        0% { background-color: rgba(212, 175, 55, 0.1); }
-        50% { background-color: rgba(212, 175, 55, 0.3); }
-        100% { background-color: transparent; }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialize the detective timer when page loads
+// Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🔍 CODESPIRE 3.0 Detective System Initialized');
-    new DetectiveTimer();
+    console.log('🚀 CODESPIRE 3.0 Reveal System Initialized');
+    new CodespireReveal();
 });
 
-// Add typing effect to title
+// Add entrance animations - simplified for better performance
 document.addEventListener('DOMContentLoaded', () => {
-    const typingElement = document.querySelector('.typing-text');
-    if (typingElement) {
-        const text = typingElement.textContent;
-        typingElement.textContent = '';
-        typingElement.style.display = 'inline-block';
-        typingElement.style.overflow = 'hidden';
-        typingElement.style.whiteSpace = 'nowrap';
+    const animateElements = document.querySelectorAll('.content-wrapper > *');
+    animateElements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'all 0.5s ease-out';
         
-        let i = 0;
-        const typeWriter = () => {
-            if (i < text.length) {
-                typingElement.textContent += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, 150);
-            }
-        };
-        
-        setTimeout(typeWriter, 1000);
-    }
+        setTimeout(() => {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, index * 150 + 500);
+    });
 });

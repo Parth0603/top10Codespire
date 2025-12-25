@@ -3,72 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODESPIRE 3.0 - Case Files Reveal</title>
+    <title>CODESPIRE 3.0 - Top 10 Teams Reveal</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- Header Section -->
-        <header class="header">
-            <div class="badge">CLASSIFIED</div>
-            <h1 class="title">
-                <span class="typing-text">CODESPIRE 3.0</span>
-            </h1>
-            <h2 class="subtitle">TOP 10 CASE FILES</h2>
-            <div class="case-number">CASE #2024-HACK-001</div>
-        </header>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Banner Section -->
+        <section class="banner-section">
+            <div class="banner-container">
+                <img src="codespire_banner.png" alt="CODESPIRE 3.0 Banner" class="main-banner">
+            </div>
+        </section>
 
         <!-- Countdown Section -->
-        <section class="countdown-section" id="countdownSection">
-            <div class="evidence-board">
-                <div class="seal-stamp">
-                    <div class="stamp-text">SEALED</div>
+        <div class="content-wrapper">
+            <section class="countdown-section" id="countdownSection">
+            <h2 class="reveal-title">TOP 10 TEAMS REVEAL IN:</h2>
+            <div class="countdown-display">
+                <div class="time-unit">
+                    <div class="time-number" id="hours">00</div>
+                    <div class="time-label">HOURS</div>
                 </div>
-                
-                <h3 class="status-text" id="statusText">THE CASE FILES ARE SEALED</h3>
-                
-                <div class="timer-container">
-                    <div class="timer-label">REVEAL IN:</div>
-                    <div class="timer" id="timer">00:30</div>
+                <div class="time-separator">:</div>
+                <div class="time-unit">
+                    <div class="time-number" id="minutes">00</div>
+                    <div class="time-label">MINUTES</div>
                 </div>
-                
-                <div class="investigation-note">
-                    <p>🕵️ Investigation in progress...</p>
-                    <p>Evidence will be revealed when the timer reaches zero.</p>
+                <div class="time-separator">:</div>
+                <div class="time-unit">
+                    <div class="time-number" id="seconds">30</div>
+                    <div class="time-label">SECONDS</div>
                 </div>
             </div>
         </section>
 
-        <!-- Results Section (Hidden Initially) -->
+        <!-- Results Section -->
         <section class="results-section" id="resultsSection" style="display: none;">
-            <div class="reveal-header">
-                <div class="badge badge-success">CASE CLOSED</div>
-                <h2>🏆 TOP 10 VERIFIED</h2>
-                <p class="reveal-subtitle">The following teams have been identified as the top performers</p>
-            </div>
-            
-            <div class="case-files" id="caseFiles">
-                <!-- Case file cards will be populated by JavaScript -->
-            </div>
-            
-            <div class="restart-controls">
-                <button class="btn btn-restart" id="restartBtn">
-                    🔄 START NEW INVESTIGATION
-                </button>
+            <h2 class="announce-title">TOP 10 TEAMS ANNOUNCED</h2>
+            <div class="teams-grid" id="teamsGrid">
+                <!-- Teams will be populated by JavaScript -->
             </div>
         </section>
 
         <!-- Loading Section -->
-        <section class="loading-section" id="loadingSection" style="display: none;">
-            <div class="loading-spinner"></div>
-            <p>Accessing case files...</p>
-        </section>
+            <section class="loading-section" id="loadingSection" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Accessing case files...</p>
+            </section>
+        </div>
+    </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>🔒 Secure Evidence Management System | CODESPIRE 3.0</p>
-        </footer>
+    <!-- Background Elements -->
+    <div class="bg-elements">
+        <div class="detective-silhouette detective-left"></div>
+        <div class="detective-silhouette detective-right"></div>
+        <div class="car-silhouette"></div>
+        <div class="circuit-pattern"></div>
     </div>
+
+    <!-- Restart Button (Hidden initially) -->
+    <button class="restart-btn" id="restartBtn" style="display: none;">
+        🔄 RESTART INVESTIGATION
+    </button>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none;"></canvas>
 
     <script src="script.js"></script>
 </body>

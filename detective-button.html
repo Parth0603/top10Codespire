@@ -1,0 +1,167 @@
+<!-- Detective Access Button for Main Website -->
+<!-- Add this to your main website's HTML body -->
+
+<div class="detective-access-btn" onclick="window.open('/top10', '_blank')" title="🔍 CODESPIRE 3.0 Case Files">
+    <svg class="magnifying-glass" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div class="detective-glow"></div>
+</div>
+
+<style>
+/* Detective Access Button Styles - CODESPIRE 3.0 Theme */
+.detective-access-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(0, 212, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease;
+    z-index: 1000;
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.detective-access-btn:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(0, 212, 255, 0.4),
+        0 0 50px rgba(255, 107, 157, 0.2);
+    border-color: rgba(0, 212, 255, 0.6);
+}
+
+.magnifying-glass {
+    width: 32px;
+    height: 32px;
+    color: #00d4ff;
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+    z-index: 2;
+}
+
+.detective-access-btn:hover .magnifying-glass {
+    color: #ff6b9d;
+    transform: rotate(15deg) scale(1.1);
+    filter: drop-shadow(0 0 15px rgba(255, 107, 157, 0.7));
+}
+
+/* Animated glow effect */
+.detective-glow {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00d4ff 0%, #ff6b9d 100%);
+    opacity: 0;
+    animation: detective-pulse 3s infinite;
+    z-index: -1;
+}
+
+@keyframes detective-pulse {
+    0% {
+        opacity: 0;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+/* Rotating border effect */
+.detective-access-btn::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #00d4ff, #ff6b9d, #00d4ff);
+    opacity: 0;
+    animation: rotate-border 2s linear infinite;
+    z-index: -1;
+}
+
+.detective-access-btn:hover::before {
+    opacity: 0.7;
+}
+
+@keyframes rotate-border {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .detective-access-btn {
+        width: 60px;
+        height: 60px;
+        bottom: 20px;
+        left: 20px;
+    }
+    
+    .magnifying-glass {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Tooltip */
+.detective-access-btn::after {
+    content: attr(title);
+    position: absolute;
+    left: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    color: #00d4ff;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 600;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+}
+
+.detective-access-btn:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(5px);
+}
+
+/* Hover particles effect */
+.detective-access-btn:hover {
+    animation: hover-float 2s ease-in-out infinite;
+}
+
+@keyframes hover-float {
+    0%, 100% { transform: translateY(-5px) scale(1.1); }
+    50% { transform: translateY(-8px) scale(1.1); }
+}
+</style>
