@@ -150,6 +150,9 @@ def get_top10():
     global FORCE_REVEAL
     current_time = datetime.now()
     
+    # Check if we should reveal (either time passed OR force reveal is active)
+    should_reveal = current_time >= REVEAL_TIME or FORCE_REVEAL
+    
     print(f"🔍 API Call - Current: {current_time.strftime('%H:%M:%S')}, Reveal: {REVEAL_TIME.strftime('%H:%M:%S')}, Force: {FORCE_REVEAL}")
     logger.info(f"API request - Force reveal: {FORCE_REVEAL}, Time check: {should_reveal}")
     
@@ -159,9 +162,6 @@ def get_top10():
         'Pragma': 'no-cache',
         'Expires': '0'
     }
-    
-    # Check if we should reveal (either time passed OR force reveal is active)
-    should_reveal = current_time >= REVEAL_TIME or FORCE_REVEAL
     
     if not should_reveal:
         # Case files are still sealed
