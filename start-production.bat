@@ -14,4 +14,4 @@ if "%PORT%"=="" set PORT=5000
 echo 🌐 Port: %PORT%
 
 REM Start Gunicorn with production configuration
-gunicorn --config gunicorn.conf.py --bind 0.0.0.0:%PORT% wsgi:application
+gunicorn --config gunicorn.conf.py --pythonpath backend app:app

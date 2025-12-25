@@ -29,4 +29,5 @@ exec gunicorn \
     --access-logfile - \
     --error-logfile - \
     --log-level info \
-    wsgi:application
+    --pythonpath backend \
+    app:app

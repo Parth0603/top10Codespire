@@ -7,8 +7,8 @@ import multiprocessing
 bind = f"0.0.0.0:{os.environ.get('PORT', 5000)}"
 backlog = 2048
 
-# Worker processes
-workers = multiprocessing.cpu_count() * 2 + 1  # Recommended formula
+# Worker processes - Limit for Render's free tier
+workers = min(4, multiprocessing.cpu_count() * 2 + 1)  # Cap at 4 workers for free tier
 worker_class = "sync"
 worker_connections = 1000
 timeout = 30
@@ -47,6 +47,10 @@ limit_request_line = 4094
 limit_request_fields = 100
 limit_request_field_size = 8190
 
+# Python path for backend directory
+pythonpath = "backend"
+
 print("🚀 Gunicorn Production Configuration Loaded")
 print(f"👥 Workers: {workers}")
 print(f"🌐 Binding to: {bind}")
+print(f"📁 Python path: {pythonpath}")
