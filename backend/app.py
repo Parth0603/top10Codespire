@@ -2,12 +2,20 @@ from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from datetime import datetime, timedelta
 import os
+import threading
+import time
+import requests
+from urllib.parse import urljoin
 
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
 
 # Get port from environment variable (for deployment) or default to 5000
 PORT = int(os.environ.get('PORT', 5000))
+
+# Keep-alive configuration
+KEEP_ALIVE_URL = None  # Will be set when server starts
+PING_INTERVAL = 840  # 14 minutes (Render spins down after 15 minutes of inactivity)
 
 # Set reveal time to 30 seconds from server start (for testing)
 REVEAL_TIME = datetime.now() + timedelta(seconds=30)
@@ -68,6 +76,52 @@ TOP10_DATA = [
         "tech": ["GraphQL", "Neo4j", "TypeScript"]
     }
 ]
+
+@app.route('/health')
+def health_check():
+    """
+    Health check endpoint for keep-alive monitoring
+    """
+    return jsonify({
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "message": "CODESPIRE 3.0 Detective Server is running"
+    })
+
+def keep_alive_ping():
+    """
+    Background function to ping the health endpoint periodically
+    """
+    while True:
+        try:
+            time.sleep(PING_INTERVAL)  # Wait 14 minutes
+            if KEEP_ALIVE_URL:
+                response = requests.get(f"{KEEP_ALIVE_URL}/health", timeout=30)
+                print(f"🏓 Keep-alive ping: {response.status_code} at {datetime.now().strftime('%H:%M:%S')}")
+        except Exception as e:
+            print(f"❌ Keep-alive ping failed: {e}")
+
+def start_keep_alive():
+    """
+    Start the keep-alive background thread
+    """
+    global KEEP_ALIVE_URL
+    
+    # Detect if we're on Render (has RENDER environment variable)
+    if os.environ.get('RENDER'):
+        # On Render, use the service URL
+        service_name = os.environ.get('RENDER_SERVICE_NAME', 'your-app')
+        KEEP_ALIVE_URL = f"https://{service_name}.onrender.com"
+    else:
+        # Local development
+        KEEP_ALIVE_URL = f"http://localhost:{PORT}"
+    
+    print(f"🏓 Keep-alive URL: {KEEP_ALIVE_URL}")
+    
+    # Start background thread
+    ping_thread = threading.Thread(target=keep_alive_ping, daemon=True)
+    ping_thread.start()
+    print("🚀 Keep-alive service started")
 
 @app.route('/api/top10')
 def get_top10():
@@ -174,6 +228,9 @@ if __name__ == '__main__':
     print(f"📅 Reveal Time Set: {REVEAL_TIME.strftime('%H:%M:%S')}")
     print(f"🌐 Frontend: http://localhost:{PORT}")
     print(f"🔒 API: http://localhost:{PORT}/api/top10")
+    
+    # Start keep-alive service
+    start_keep_alive()
     
     # Use different host for local vs production
     host = '127.0.0.1' if PORT == 5000 else '0.0.0.0'
