@@ -17,7 +17,6 @@ class CodespireReveal {
         this.hoursElement = document.getElementById('hours');
         this.minutesElement = document.getElementById('minutes');
         this.secondsElement = document.getElementById('seconds');
-        this.restartBtn = document.getElementById('restartBtn');
         this.countdownSection = document.getElementById('countdownSection');
         this.resultsSection = document.getElementById('resultsSection');
         this.loadingSection = document.getElementById('loadingSection');
@@ -25,9 +24,7 @@ class CodespireReveal {
     }
 
     attachEventListeners() {
-        if (this.restartBtn) {
-            this.restartBtn.addEventListener('click', () => this.restartInvestigation());
-        }
+        // No event listeners needed anymore
     }
 
     setupConfetti() {
@@ -207,7 +204,6 @@ class CodespireReveal {
         this.loadingSection.style.display = 'none';
         this.countdownSection.style.display = 'none';
         this.resultsSection.style.display = 'block';
-        this.restartBtn.style.display = 'block';
         
         // Start confetti animation
         setTimeout(() => this.startConfetti(), 500);
@@ -282,51 +278,6 @@ class CodespireReveal {
         console.error(message);
     }
 
-    async restartInvestigation() {
-        try {
-            const response = await fetch('/api/restart', {
-                method: 'POST',
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache'
-                }
-            });
-            
-            if (response.ok) {
-                // Reset all state
-                this.isRevealed = false;
-                this.isRunning = false;
-                this.timeRemaining = 30; // 30 seconds for testing
-                
-                // Clear any running timer
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-                
-                // Hide confetti
-                this.canvas.style.display = 'none';
-                this.confettiParticles = [];
-                
-                // Reset UI
-                this.resultsSection.style.display = 'none';
-                this.loadingSection.style.display = 'none';
-                this.countdownSection.style.display = 'block';
-                this.restartBtn.style.display = 'none';
-                
-                // Reset timer display
-                this.updateTimerDisplay();
-                
-                console.log('🔄 Investigation restarted successfully');
-                
-                // Auto-start the new timer
-                this.startTimer();
-            }
-        } catch (error) {
-            console.error('Failed to restart investigation:', error);
-            this.showError('Failed to restart investigation');
-        }
-    }
 }
 
 // Initialize when page loads

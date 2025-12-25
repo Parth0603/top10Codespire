@@ -418,28 +418,6 @@ body {
     color: #cccccc;
 }
 
-/* Restart Button */
-.restart-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ffffff;
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.restart-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-header {
