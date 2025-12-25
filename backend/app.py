@@ -6,9 +6,28 @@ import threading
 import time
 import requests
 from urllib.parse import urljoin
+import logging
+
+# Configure logging for production
+if os.environ.get('FLASK_ENV') == 'production':
+    logging.basicConfig(level=logging.INFO)
+else:
+    logging.basicConfig(level=logging.DEBUG)
+
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
+
+# Production security headers
+@app.after_request
+def after_request(response):
+    # Security headers for production
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
 
 # Get port from environment variable (for deployment) or default to 5000
 PORT = int(os.environ.get('PORT', 5000))
@@ -132,6 +151,7 @@ def get_top10():
     current_time = datetime.now()
     
     print(f"🔍 API Call - Current: {current_time.strftime('%H:%M:%S')}, Reveal: {REVEAL_TIME.strftime('%H:%M:%S')}, Force: {FORCE_REVEAL}")
+    logger.info(f"API request - Force reveal: {FORCE_REVEAL}, Time check: {should_reveal}")
     
     # Create response with no-cache headers for security
     response_headers = {
@@ -146,6 +166,7 @@ def get_top10():
     if not should_reveal:
         # Case files are still sealed
         print("🔒 Files still sealed")
+        logger.info("Access denied - files still sealed")
         response = jsonify({
             "status": "LOCKED",
             "message": "Case files are sealed. Investigation in progress..."
@@ -153,6 +174,7 @@ def get_top10():
     else:
         # Time to reveal the top 10
         print("🎉 Revealing case files!")
+        logger.info("Access granted - revealing case files")
         response = jsonify({
             "status": "OPEN", 
             "data": TOP10_DATA,
